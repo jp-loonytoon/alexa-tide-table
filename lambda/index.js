@@ -123,6 +123,7 @@ const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
   .addRequestHandlers(
+    GetNextTideHandler,
     LaunchRequestHandler,
     HelpHandler,
     ExitHandler,
