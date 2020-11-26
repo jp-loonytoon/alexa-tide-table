@@ -41,52 +41,39 @@ const GetNextTideHandler = {
   },
 };
 
+
+// handles the user asking for help
 const HelpHandler = {
-  canHandle(handlerInput) {
-    const request = handlerInput.requestEnvelope.request;
-    return request.type === 'IntentRequest'
-      && request.intent.name === 'AMAZON.HelpIntent';
-  },
-  handle(handlerInput) {
-    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    return handlerInput.responseBuilder
-      .speak(requestAttributes.t('HELP_MESSAGE'))
-      .reprompt(requestAttributes.t('HELP_REPROMPT'))
-      .getResponse();
-  },
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
+    },
+    handle(handlerInput) {
+        const speakOutput = 'Where would you like to get the high tide for?';
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
+    }
 };
 
-const FallbackHandler = {
-  // The FallbackIntent can only be sent in those locales which support it,
-  // so this handler will always be skipped in locales where it is not supported.
-  canHandle(handlerInput) {
-    const request = handlerInput.requestEnvelope.request;
-    return request.type === 'IntentRequest'
-      && request.intent.name === 'AMAZON.FallbackIntent';
-  },
-  handle(handlerInput) {
-    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    return handlerInput.responseBuilder
-      .speak(requestAttributes.t('FALLBACK_MESSAGE'))
-      .reprompt(requestAttributes.t('FALLBACK_REPROMPT'))
-      .getResponse();
-  },
-};
 
+// handles cancel and stop intents
 const ExitHandler = {
-  canHandle(handlerInput) {
-    const request = handlerInput.requestEnvelope.request;
-    return request.type === 'IntentRequest'
-      && (request.intent.name === 'AMAZON.CancelIntent'
-        || request.intent.name === 'AMAZON.StopIntent');
-  },
-  handle(handlerInput) {
-    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    return handlerInput.responseBuilder
-      .speak(requestAttributes.t('STOP_MESSAGE'))
-      .getResponse();
-  },
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
+            && (Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.CancelIntent'
+                || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
+    },
+    handle(handlerInput) {
+        const speakOutput = 'Goodbye!';
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .getResponse();
+    }
 };
+
 
 const SessionEndedRequestHandler = {
   canHandle(handlerInput) {
@@ -123,11 +110,10 @@ const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
   .addRequestHandlers(
-    GetNextTideHandler,
     LaunchRequestHandler,
+    GetNextTideHandler,
     HelpHandler,
     ExitHandler,
-    FallbackHandler,
     SessionEndedRequestHandler,
   )
   .addErrorHandlers(ErrorHandler)
