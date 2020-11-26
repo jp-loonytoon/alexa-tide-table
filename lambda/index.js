@@ -27,6 +27,7 @@ const GetNextTideHandler = {
         && request.intent.name === 'NextHighTideIntent');
   },
   handle(handlerInput) {
+    slots = handler_input.request_envelope.request.intent.slots
     const speakOutput = 'The tide at Portsmouth is coming in now, and high tide will be in 50 minutes, at 9.45pm'
 
     return handlerInput.responseBuilder
