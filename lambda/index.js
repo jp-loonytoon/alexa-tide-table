@@ -106,10 +106,10 @@ const ErrorHandler = {
 };
 
 
+// log the JSON request to Amazon CloudWatch each time a request is received by the skill. 
 const RequestLog = {
     process(handlerInput) {
         console.log("REQUEST ENVELOPE = " + JSON.stringify(handlerInput.requestEnvelope));
-        return;
     }
 };
 
