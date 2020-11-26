@@ -28,7 +28,7 @@ const GetNextTideHandler = {
   },
   handle(handlerInput) {
     var portName = this.event.request.intent.slots.Location.value;
-    console.log("Value of port (Location) = " + port);
+    console.log("Value of port (Location) = " + portName);
     const speakOutput = 'The tide at Portsmouth is coming in now, and high tide will be in 50 minutes, at 9.45pm'
 
     return handlerInput.responseBuilder
