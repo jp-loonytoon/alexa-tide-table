@@ -1,32 +1,34 @@
-/*
- * Copyright 2018-2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * Licensed under the Apache License, Version 2.0 (the "License").
- * You may not use this file except in compliance with the License.
- * A copy of the License is located at
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * or in the "license" file accompanying this file. This file is distributed
- * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing
- * permissions and limitations under the License.
- */
-
 // sets up dependencies
 const Alexa = require('ask-sdk-core');
-const i18n = require('i18next');
-const languageStrings = require('./languageStrings');
 
-// core functionality for fact skill
-const GetNewFactHandler = {
+
+const LaunchRequestHandler = {
+    canHandle(handlerInput) {
+        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
+    },
+    handle(handlerInput) {
+        const speakOutput = 'Where would you like to find the high tide for?';
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
+    }
+};
+
+
+// core functionality for tide table skill
+const GetNextTideHandler = {
   canHandle(handlerInput) {
     const request = handlerInput.requestEnvelope.request;
+    
     // checks request type
     return request.type === 'LaunchRequest'
       || (request.type === 'IntentRequest'
-        && request.intent.name === 'GetNewFactIntent');
+        && request.intent.name === 'NextHighTideIntent');
   },
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    
     // gets a random fact by assigning an array to the variable
     // the random item from the array will be selected by the i18next library
     // the i18next library is set up in the Request Interceptor
@@ -102,6 +104,7 @@ const SessionEndedRequestHandler = {
   },
 };
 
+
 const ErrorHandler = {
   canHandle() {
     return true;
@@ -117,47 +120,16 @@ const ErrorHandler = {
   },
 };
 
-const LocalizationInterceptor = {
-  process(handlerInput) {
-    // Gets the locale from the request and initializes i18next.
-    const localizationClient = i18n.init({
-      lng: handlerInput.requestEnvelope.request.locale,
-      resources: languageStrings,
-      returnObjects: true
-    });
-    // Creates a localize function to support arguments.
-    localizationClient.localize = function localize() {
-      // gets arguments through and passes them to
-      // i18next using sprintf to replace string placeholders
-      // with arguments.
-      const args = arguments;
-      const value = i18n.t(...args);
-      // If an array is used then a random value is selected
-      if (Array.isArray(value)) {
-        return value[Math.floor(Math.random() * value.length)];
-      }
-      return value;
-    };
-    // this gets the request attributes and save the localize function inside
-    // it to be used in a handler by calling requestAttributes.t(STRING_ID, [args...])
-    const attributes = handlerInput.attributesManager.getRequestAttributes();
-    attributes.t = function translate(...args) {
-      return localizationClient.localize(...args);
-    }
-  }
-};
-
 const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
   .addRequestHandlers(
-    GetNewFactHandler,
+    LaunchRequestHandler,
     HelpHandler,
     ExitHandler,
     FallbackHandler,
     SessionEndedRequestHandler,
   )
-  .addRequestInterceptors(LocalizationInterceptor)
   .addErrorHandlers(ErrorHandler)
-  .withCustomUserAgent('sample/basic-fact/v2')
+  .withCustomUserAgent('tide-table/v1')
   .lambda();
