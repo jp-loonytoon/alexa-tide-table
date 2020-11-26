@@ -106,6 +106,14 @@ const ErrorHandler = {
 };
 
 
+const RequestLog = {
+    process(handlerInput) {
+        console.log("REQUEST ENVELOPE = " + JSON.stringify(handlerInput.requestEnvelope));
+        return;
+    }
+};
+
+
 const skillBuilder = Alexa.SkillBuilders.custom();
 
 exports.handler = skillBuilder
@@ -117,5 +125,6 @@ exports.handler = skillBuilder
     SessionEndedRequestHandler,
   )
   .addErrorHandlers(ErrorHandler)
+  .addRequestInterceptors(RequestLog)
   .withCustomUserAgent('tide-table/v1')
   .lambda();
