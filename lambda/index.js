@@ -29,12 +29,7 @@ const GetNextTideHandler = {
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
     
-    // gets a random fact by assigning an array to the variable
-    // the random item from the array will be selected by the i18next library
-    // the i18next library is set up in the Request Interceptor
-    const randomFact = requestAttributes.t('FACTS');
-    // concatenates a standard message with the random fact
-    const speakOutput = requestAttributes.t('GET_FACT_MESSAGE') + randomFact;
+    const speakOutput = 'The tide at Portsmouth is coming in now, and high tide will be in 50 minutes, at 9.45pm'
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
@@ -105,20 +100,24 @@ const SessionEndedRequestHandler = {
 };
 
 
+// Generic error handling to capture any syntax or routing errors. If you receive an error
+// stating the request handler chain is not found, you have not implemented a handler for
+// the intent being invoked or included it in the skill builder below.
 const ErrorHandler = {
-  canHandle() {
-    return true;
-  },
-  handle(handlerInput, error) {
-    console.log(`Error handled: ${error.message}`);
-    console.log(`Error stack: ${error.stack}`);
-    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    return handlerInput.responseBuilder
-      .speak(requestAttributes.t('ERROR_MESSAGE'))
-      .reprompt(requestAttributes.t('ERROR_MESSAGE'))
-      .getResponse();
-  },
+    canHandle() {
+        return true;
+    },
+    handle(handlerInput, error) {
+        console.log(`~~~~ Error handled: ${error.stack}`);
+        const speakOutput = `Sorry, I had trouble doing what you asked. Please try again.`;
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(speakOutput)
+            .getResponse();
+    }
 };
+
 
 const skillBuilder = Alexa.SkillBuilders.custom();
 
