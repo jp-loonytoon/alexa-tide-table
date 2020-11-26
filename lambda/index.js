@@ -28,7 +28,8 @@ const GetNextTideHandler = {
   },
   handle(handlerInput) {
     const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
-    const slots = this.event.request.intent.slots;
+    //const slots = this.event.request.intent.slots;
+    const slots = "foo";
     console.log("Slots value = " + slots);
     const portName = 'Dover';
     //console.log(`Value of port (Location) for intent ${intentName} = ${portName}`);
