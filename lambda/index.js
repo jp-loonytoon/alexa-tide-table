@@ -11,6 +11,7 @@ const LaunchRequestHandler = {
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt(speakOutput)
+            .withSimpleCard('Tide Table', speakOutput)
             .getResponse();
     }
 };
