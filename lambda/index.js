@@ -31,8 +31,8 @@ const GetNextTideHandler = {
         && request.intent.name === 'NextHighTideIntent');
   },
   handle(handlerInput) {
-    console.log("THIS.EVENT = GetNextTideHandler");
-    const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
+    const intentName = handlerInput.requestEnvelope.request.intent.name;
+    console.log(`THIS.EVENT = GetNextTideHandler; with INTENT = ${intentName}`);
     const portName = handlerInput.requestEnvelope.request.intent.slots.Location.value;
     const speakOutput = `The tide at ${portName} is coming in now, and high tide will be in 33 minutes, at 9.45pm`;
 
