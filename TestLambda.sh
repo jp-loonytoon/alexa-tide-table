@@ -5,8 +5,18 @@
 
 LAMBDA_NAME=TideTable
 LAUNCH_REQUEST_JSON=`cat LaunchRequest.json`
+GET_HIGHTIDE_REQUEST_JSON=`cat GetNextHighTideRequest.json`
 
 aws lambda invoke --function-name $LAMBDA_NAME \
     --cli-binary-format raw-in-base64-out \
     --payload "${LAUNCH_REQUEST_JSON}" \
     test-response.json | jq
+jq '.response.outputSpeech.ssml' test-response.json
+
+sleep 2
+
+aws lambda invoke --function-name $LAMBDA_NAME \
+    --cli-binary-format raw-in-base64-out \
+    --payload "${GET_HIGHTIDE_REQUEST_JSON}" \
+    test-response.json | jq
+jq '.response.outputSpeech.ssml' test-response.json

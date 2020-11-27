@@ -2,6 +2,7 @@
 const Alexa = require('ask-sdk-core');
 
 let region = process.env.AWS_REGION
+let versionInfo = process.env.AWS_LAMBDA_FUNCTION_NAME + "/" + process.env.AWS_LAMBDA_FUNCTION_VERSION;
 
 
 const LaunchRequestHandler = {
@@ -10,6 +11,7 @@ const LaunchRequestHandler = {
     },
     handle(handlerInput) {
       console.log(`THIS.EVENT = LaunchRequestHandler running on ${region}`);
+      console.log(`VERSION INFO = ${versionInfo}`)
       const speakOutput = 'Where would you like to find the high tide for?';
       return handlerInput.responseBuilder
           .speak(speakOutput)
@@ -33,8 +35,10 @@ const GetNextTideHandler = {
   handle(handlerInput) {
     const intentName = handlerInput.requestEnvelope.request.intent.name;
     console.log(`THIS.EVENT = GetNextTideHandler; with INTENT = ${intentName}`);
+    const li = Alexa.getIntentName(handlerInput.requestEnvelope)
+    console.log(`REPEATED INTENT = ${li}`);
     const portName = handlerInput.requestEnvelope.request.intent.slots.Location.value;
-    const speakOutput = `The tide at ${portName} is coming in now, and high tide will be in 33 minutes, at 9.45pm`;
+    const speakOutput = `The tide at ${portName} is coming in now, and high tide will be in 31 minutes, at 7.29pm`;
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
@@ -154,5 +158,5 @@ exports.handler = skillBuilder
   .addRequestInterceptors(
     RequestLog
   )
-  .withCustomUserAgent('tide-table/v1')
+  .withCustomUserAgent('tide-table/v1.0')
   .lambda();
