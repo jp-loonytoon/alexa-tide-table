@@ -4,15 +4,16 @@ const Alexa = require('ask-sdk-core');
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
+      return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
-        const speakOutput = 'Where would you like to find the high tide for?';
-        return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .reprompt(speakOutput)
-            .withSimpleCard('Tide Table', speakOutput)
-            .getResponse();
+      console.log("THIS.EVENT = " + JSON.stringify(this.event));
+      const speakOutput = 'Where would you like to find the high tide for?';
+      return handlerInput.responseBuilder
+          .speak(speakOutput)
+          .reprompt(speakOutput)
+          .withSimpleCard('Tide Table', speakOutput)
+          .getResponse();
     }
 };
 
@@ -28,10 +29,9 @@ const GetNextTideHandler = {
         && request.intent.name === 'NextHighTideIntent');
   },
   handle(handlerInput) {
+    console.log("THIS.EVENT = " + JSON.stringify(this.event));
     const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
     const portName = handlerInput.requestEnvelope.request.intent.slots.Location.value;
-//    const portName = 'Dover';
-    //console.log(`Value of port (Location) for intent ${intentName} = ${portName}`);
     const speakOutput = `The tide at ${portName} is coming in now, and high tide will be in 50 minutes, at 9.45pm`;
 
     return handlerInput.responseBuilder
