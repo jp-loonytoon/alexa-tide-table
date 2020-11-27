@@ -1,13 +1,15 @@
 // sets up dependencies
 const Alexa = require('ask-sdk-core');
 
+let region = process.env.AWS_REGION
+
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
       return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
-      console.log("THIS.EVENT = " + JSON.stringify(this.event));
+      console.log(`THIS.EVENT = LaunchRequestHandler running on ${region}`);
       const speakOutput = 'Where would you like to find the high tide for?';
       return handlerInput.responseBuilder
           .speak(speakOutput)
@@ -29,10 +31,10 @@ const GetNextTideHandler = {
         && request.intent.name === 'NextHighTideIntent');
   },
   handle(handlerInput) {
-    console.log("THIS.EVENT = " + JSON.stringify(this.event));
+    console.log("THIS.EVENT = GetNextTideHandler");
     const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
     const portName = handlerInput.requestEnvelope.request.intent.slots.Location.value;
-    const speakOutput = `The tide at ${portName} is coming in now, and high tide will be in 50 minutes, at 9.45pm`;
+    const speakOutput = `The tide at ${portName} is coming in now, and high tide will be in 33 minutes, at 9.45pm`;
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
