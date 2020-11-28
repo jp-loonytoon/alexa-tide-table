@@ -1,4 +1,6 @@
 # Tide Table
+<<<<<<< HEAD
+=======
 
 Tide Table is a simple Alexa skill that allows you to ask for the next high or low tide. Currently it only works for the coast around the United Kingdom. It relies on the Tides API from Marea which is access via RapidAPI:
 
@@ -128,3 +130,4 @@ The Location slot is used to capture the port, which can then be accessed in the
 
 const portName = Alexa.getSlotValue(r, 'Location');
 
+>>>>>>> master
