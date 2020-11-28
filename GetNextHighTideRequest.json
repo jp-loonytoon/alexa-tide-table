@@ -1,0 +1,106 @@
+{
+  "version": "1.0",
+  "session": {
+    "new": false,
+    "sessionId": "amzn1.echo-api.session.f7a8bada-78e8-4f93-a447-f2ee765709e2",
+    "application": {
+      "applicationId": "amzn1.ask.skill.a34389ed-8bbd-4a82-9130-d82ff119e117"
+    },
+    "user": {
+      "userId": "amzn1.ask.account.AGDWE4TUCY2BABEXUVQS7FZJVIKI4MO7L3S5WKTXT6VWHLRGUSP2XRXDWHWP5B5GODYJPBYDELJZEPM7WCIW4RUPMPZI76VKSXKMIWT2H65UU7KM4W5IJMBZZ3PU5F6KVXBP7Y3WIW43IRMNUREVGYI377LZCZQ46RY5S566BORFIYTPZJISHPIBTUO7I5CG5OVPWRR2Q3RQIUY"
+    }
+  },
+  "context": {
+    "Viewports": [
+      {
+        "type": "APL",
+        "id": "main",
+        "shape": "RECTANGLE",
+        "dpi": 160,
+        "presentationType": "STANDARD",
+        "canRotate": false,
+        "configuration": {
+          "current": {
+            "video": {
+              "codecs": [
+                "H_264_42",
+                "H_264_41"
+              ]
+            },
+            "size": {
+              "type": "DISCRETE",
+              "pixelWidth": 1024,
+              "pixelHeight": 600
+            }
+          }
+        }
+      }
+    ],
+    "Viewport": {
+      "experiences": [
+        {
+          "arcMinuteWidth": 246,
+          "arcMinuteHeight": 144,
+          "canRotate": false,
+          "canResize": false
+        }
+      ],
+      "shape": "RECTANGLE",
+      "pixelWidth": 1024,
+      "pixelHeight": 600,
+      "dpi": 160,
+      "currentPixelWidth": 1024,
+      "currentPixelHeight": 600,
+      "touch": [
+        "SINGLE"
+      ],
+      "video": {
+        "codecs": [
+          "H_264_42",
+          "H_264_41"
+        ]
+      }
+    },
+    "Extensions": {
+      "available": {
+        "aplext:backstack:10": {}
+      }
+    },
+    "System": {
+      "application": {
+        "applicationId": "amzn1.ask.skill.a34389ed-8bbd-4a82-9130-d82ff119e117"
+      },
+      "user": {
+        "userId": "amzn1.ask.account.AGDWE4TUCY2BABEXUVQS7FZJVIKI4MO7L3S5WKTXT6VWHLRGUSP2XRXDWHWP5B5GODYJPBYDELJZEPM7WCIW4RUPMPZI76VKSXKMIWT2H65UU7KM4W5IJMBZZ3PU5F6KVXBP7Y3WIW43IRMNUREVGYI377LZCZQ46RY5S566BORFIYTPZJISHPIBTUO7I5CG5OVPWRR2Q3RQIUY"
+      },
+      "device": {
+        "deviceId": "amzn1.ask.device.AHBRC4ET4N3YEUAZZPSEYBDDKEEOUQBH4MMUHIOCKRCTNV7XI7GFYOEWWXLJMT4WUKDCEDMZ5O3XXIGEFWINNBVFENICVHL2EJDJPZ5KEXNX2W3MHH7SBKLYER3Q2OPO6SXQUEV6NTRSTZED5SZ7WCIBAWXYV6LGOQPT7XYTVKKGYHLN3TP36",
+        "supportedInterfaces": {}
+      },
+      "apiEndpoint": "https://api.eu.amazonalexa.com",
+      "apiAccessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjEifQ.eyJhdWQiOiJodHRwczovL2FwaS5hbWF6b25hbGV4YS5jb20iLCJpc3MiOiJBbGV4YVNraWxsS2l0Iiwic3ViIjoiYW16bjEuYXNrLnNraWxsLmEzNDM4OWVkLThiYmQtNGE4Mi05MTMwLWQ4MmZmMTE5ZTExNyIsImV4cCI6MTYwNjQ4ODkzMiwiaWF0IjoxNjA2NDg4NjMyLCJuYmYiOjE2MDY0ODg2MzIsInByaXZhdGVDbGFpbXMiOnsiY29udGV4dCI6IkFBQUFBQUFBQVFCYlNjNHFKdC9Ka285V2FWZ29tOHY4S2dFQUFBQUFBQUJ5K3RpWENBU2J4WGdzVHhzaHZpL2RELzFlaFlENHpLL0tMZDF6RmhoMnB0SGI4N0tkR2VMYW9ITk0zVjFzbWxjK093YUZVZVpFaTR6VjNmK2w4SHJoNmIxcUFYbWpyTnc1TUVobGVmMmxBN1NQWG5FUGR3RzFidGIvMEUrZWo0cG81bDkyRWFTWS95TEtrUWdyRURmb0ttSmVZL2o0S1h4bGFxQkJ3R3JWZFkxY1hrOGlXMDNaWnN1aWpyMDU4Q2JJQWtSNUhTQ1p2cTMxZ0pPZ0VpcUxHbEJhOUN3TWg2VmJNb0lmK3JDZlFMaHN4V2RVdURnK3JON2d2RDRkYmtqZmd3S3pmQzV5QkRpM2JTNHdoVHVkK3VLT210NEpVVGtnSGVQMXJIcG5xd05mRmdqc2ZkbHZhbjBpaUphalpwOEtzMHh3aEtaTC84Q3oyVDBwMkxNZlhxQUpQcUwyT1lhWWpTWFh5cUJIbTA3LzFPeXJZOXAzcXRJcXJCTHdvT3FkTTNHZUpyYndwbk9UIiwiY29uc2VudFRva2VuIjpudWxsLCJkZXZpY2VJZCI6ImFtem4xLmFzay5kZXZpY2UuQUhCUkM0RVQ0TjNZRVVBWlpQU0VZQkRES0VFT1VRQkg0TU1VSElPQ0tSQ1ROVjdYSTdHRllPRVdXWExKTVQ0V1VLRENFRE1aNU8zWFhJR0VGV0lOTkJWRkVOSUNWSEwyRUpESlBaNUtFWE5YMlczTUhIN1NCS0xZRVIzUTJPUE82U1hRVUVWNk5UUlNUWkVENVNaN1dDSUJBV1hZVjZMR09RUFQ3WFlUVktLR1lITE4zVFAzNiIsInVzZXJJZCI6ImFtem4xLmFzay5hY2NvdW50LkFHRFdFNFRVQ1kyQkFCRVhVVlFTN0ZaSlZJS0k0TU83TDNTNVdLVFhUNlZXSExSR1VTUDJYUlhEV0hXUDVCNUdPRFlKUEJZREVMSlpFUE03V0NJVzRSVVBNUFpJNzZWS1NYS01JV1QySDY1VVU3S000VzVJSk1CWlozUFU1RjZLVlhCUDdZM1dJVzQzSVJNTlVSRVZHWUkzNzdMWkNaUTQ2Ulk1UzU2NkJPUkZJWVRQWkpJU0hQSUJUVU83STVDRzVPVlBXUlIyUTNSUUlVWSJ9fQ.cRgD88uPtANMJOpdQOpoqWJ9Xn8-WRXaWOjqfxwth4xYoE4uQkrGI8UhUJ4bN0js-sn4EXdy-PCQqU3_JTXwsCX_kb9Y7mdaOUB5xUSOWuP5_H29bDJYQD5K5qpP0_me4PqFlPLO4nUluYPbpgrKbj9qXWrcmIFoqCwtLY8sCzvbaEw73YWWT9iiB25uVkXjGGlIUiHIaYQS8yavPUoQ8b18y_ncCCvhxA9Zp6twnsi5S6PwpFM5bHjcODF1G1zBqtYIRmL7YN41Q8lzMh_P-oeUlifmW5bK9RgHsbILMgU4JMnCMU0xZt2QDYTDmaqc-FTym-wm1BXRT8lrgN2yow"
+    }
+  },
+  "request": {
+    "type": "IntentRequest",
+    "requestId": "amzn1.echo-api.request.d6597c65-ca2c-455e-885f-0d2835386a95",
+    "locale": "en-GB",
+    "timestamp": "2020-11-27T14:50:32Z",
+    "intent": {
+      "name": "NextHighTideIntent",
+      "confirmationStatus": "NONE",
+      "slots": {
+        "Location": {
+          "name": "Location",
+          "value": "Harwich",
+          "confirmationStatus": "NONE",
+          "source": "USER",
+          "slotValue": {
+            "type": "Simple",
+            "value": "Harwich"
+          }
+        }
+      }
+    }
+  }
+}
