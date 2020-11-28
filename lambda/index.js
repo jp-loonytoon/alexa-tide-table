@@ -25,19 +25,20 @@ const LaunchRequestHandler = {
 // core functionality for tide table skill
 const GetNextTideHandler = {
   canHandle(handlerInput) {
-    const request = handlerInput.requestEnvelope.request;
+    const r = handlerInput.requestEnvelope;
     
     // checks request type
-    return request.type === 'LaunchRequest'
-      || (request.type === 'IntentRequest'
-        && request.intent.name === 'NextHighTideIntent');
+    return Alexa.getRequestType(r) === 'LaunchRequest'
+      || (Alexa.getRequestType(r) === 'IntentRequest'
+        && Alexa.getIntentName(r) === 'NextHighTideIntent');
   },
   handle(handlerInput) {
-    const intentName = handlerInput.requestEnvelope.request.intent.name;
+    const r = handlerInput.requestEnvelope;
+    const intentName = Alexa.getIntentName(r);
     console.log(`THIS.EVENT = GetNextTideHandler; with INTENT = ${intentName}`);
-    const li = Alexa.getIntentName(handlerInput.requestEnvelope)
-    console.log(`REPEATED INTENT = ${li}`);
-    const portName = handlerInput.requestEnvelope.request.intent.slots.Location.value;
+
+    const portName = Alexa.getSlotValue(r, 'Location');
+    //const portName = handlerInput.requestEnvelope.request.intent.slots.Location.value;
     const speakOutput = `The tide at ${portName} is coming in now, and high tide will be in 31 minutes, at 7.29pm`;
 
     return handlerInput.responseBuilder
@@ -123,7 +124,7 @@ const IntentReflectorHandler = {
       return handlerInput.requestEnvelope.request.type === 'IntentRequest';
   },
   handle(handlerInput) {
-      const intentName = handlerInput.requestEnvelope.request.intent.name;
+      const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
       const speechText = `You just triggered ${intentName}`;
 
       return handlerInput.responseBuilder
