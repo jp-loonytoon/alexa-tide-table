@@ -51,5 +51,7 @@ aws lambda update-function-code --function-name TideTable \
     --zip-file fileb://tidetable.zip --output yaml
 ```
 
+Alternately you can use the `UpdateLambda.sh` script to do this.
+
 See the AWS Lambda Development Guide for more details: https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html
 
