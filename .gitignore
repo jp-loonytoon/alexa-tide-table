@@ -1,6 +1,7 @@
 lambda/node_modules
 .ask/
 ask-resources.json
-
+*.log
 tidetable.zip
 test-response.json
+test_output/

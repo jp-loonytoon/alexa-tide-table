@@ -30,19 +30,15 @@
       "category": "KNOWLEDGE_AND_TRIVIA",
       "locales": {
         "en-GB": {
-          "description": "Ask for Space Facts, and learn about what really matters, like dark matter.\n\nSpace Facts provides fun the whole family can enjoy and is guaranteed to make you smarter.\n\nTo start, just say \"Alexa, launch Space Facts\" or \"Alexa, open Space Facts\" to get a fact\".\n\nAt anytime, you can stop by saying \"Alexa, stop\"",
+          "description": "Ask when high tide or low tide will be at a location around the coast of Britain.\n\nTo start, just say \"Alexa, launch Table Table\"\n\nAt anytime, you can stop by saying \"Alexa, stop\"",
           "examplePhrases": [
-            "Alexa open space facts",
-            "Alexa ask space facts for a fact",
-            "Alexa tell space facts to tell me trivia"
+            "Alexa ask tide table when is the next high tide at Stornaway"
           ],
           "keywords": [
-            "space",
-            "facts",
-            "trivia"
+            "tides"
           ],
           "name": "Tide Table",
-          "summary": "Learn fun facts about space."
+          "summary": "Find out the state of the tide around the UK."
         }
       }
     }
