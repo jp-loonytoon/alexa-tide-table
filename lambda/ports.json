@@ -3,18 +3,18 @@
     "ports": [
         { 
             "name": "Portsmouth",
-            "latitude": "50.8036831",
-            "longitude": "-1.075614"
+            "latitude": "50.8197675",
+            "longitude": "-1.0879769"
         },
         {
             "name": "Dover",
-            "latitude": "51.1251275",
-            "longitude": "1.3134228"
+            "latitude": "51.1278758",
+            "longitude": "1.3134027"
         },
         {
             "name": "Ullapool",
-            "latitude": "57.8978237",
-            "longitude": "-5.1586647"
+            "latitude": "57.895418",
+            "longitude": "-5.161313"
         }
     ]
 }
