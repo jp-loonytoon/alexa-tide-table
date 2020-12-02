@@ -21,7 +21,7 @@ configuration:
   - prompt: Where would you like to get the high tide for?
   - reprompt: Where would you like to get the high tide for?
 - NextHighTideIntent Location=Portsmouth:
-  - prompt: The tide at Portsmouth is coming in now, and high tide will be in 18 minutes, at 7.29pm
+  - prompt: The tide at Portsmouth is coming in now, and high tide will be in 23 minutes, at 7.29pm
   - exit
 
 ---
