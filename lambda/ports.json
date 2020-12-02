@@ -1,6 +1,11 @@
 {
     "version": "1.0",
     "ports": [
+        {
+            "name": "Wick",
+            "latitude": "58.438936",
+            "longitude": "-3.093716"
+        },
         { 
             "name": "Portsmouth",
             "latitude": "50.8197675",
