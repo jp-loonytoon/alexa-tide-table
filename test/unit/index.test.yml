@@ -1,0 +1,30 @@
+# This is the test file for your unit tests, feel free to copy and modify the template test
+# as many times as you want. In this same folder, you'll also find a testing.json
+# file. It contains global configurations for future test files you might create in the future.
+#
+# Find more info on https://read.bespoken.io/unit-testing/getting-started/
+---
+configuration:
+  description: Tide Table unit test suite
+  locale: en-GB
+
+---
+- test: Launch and the skill
+- LaunchRequest: # LaunchRequest sends a LaunchRequest
+  - prompt: Where would you like to find the high tide for?
+  - exit
+
+---
+- test: Ask for help and then for high tide info for Portsmouth
+- LaunchRequest # Empty expected part means we are not testing the response
+- AMAZON.HelpIntent:
+  - prompt: Where would you like to get the high tide for?
+  - reprompt: Where would you like to get the high tide for?
+- NextHighTideIntent Location=Portsmouth:
+  - prompt: The tide at Portsmouth is coming in now, and high tide will be in 23 minutes, at 7.29pm
+  - exit
+
+---
+- test: Stop intent
+- LaunchRequest
+- AMAZON.StopIntent: Goodbye!

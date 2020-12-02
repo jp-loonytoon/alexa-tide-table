@@ -1,18 +1,23 @@
 // sets up dependencies
 const Alexa = require('ask-sdk-core');
 
+let region = process.env.AWS_REGION
+let versionInfo = process.env.AWS_LAMBDA_FUNCTION_NAME + "/" + process.env.AWS_LAMBDA_FUNCTION_VERSION;
+
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
-        return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
+      return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
     },
     handle(handlerInput) {
-        const speakOutput = 'Where would you like to find the high tide for?';
-        return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .reprompt(speakOutput)
-            .withSimpleCard('Tide Table', speakOutput)
-            .getResponse();
+      console.log(`THIS.EVENT = LaunchRequestHandler running on ${region}`);
+      console.log(`VERSION INFO = ${versionInfo}`)
+      const speakOutput = 'Where would you like to find the high tide for?';
+      return handlerInput.responseBuilder
+          .speak(speakOutput)
+          .reprompt(speakOutput)
+          .withSimpleCard('Tide Table', speakOutput)
+          .getResponse();
     }
 };
 
@@ -20,19 +25,21 @@ const LaunchRequestHandler = {
 // core functionality for tide table skill
 const GetNextTideHandler = {
   canHandle(handlerInput) {
-    const request = handlerInput.requestEnvelope.request;
+    const r = handlerInput.requestEnvelope;
     
     // checks request type
-    return request.type === 'LaunchRequest'
-      || (request.type === 'IntentRequest'
-        && request.intent.name === 'NextHighTideIntent');
+    return Alexa.getRequestType(r) === 'LaunchRequest'
+      || (Alexa.getRequestType(r) === 'IntentRequest'
+        && Alexa.getIntentName(r) === 'NextHighTideIntent');
   },
   handle(handlerInput) {
-    const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
-    const portName = handlerInput.requestEnvelope.request.intent.slots.Location.value;
-    console.log(`Value of port (Location) for intent ${intentName} = ${portName}`);
-    const speakOutput = `The tide at ${portName} is coming in now, and high tide will be in 50 minutes, at 9.45pm`;
+    const r = handlerInput.requestEnvelope;
+    const intentName = Alexa.getIntentName(r);
+    console.log(`THIS.EVENT = GetNextTideHandler; with INTENT = ${intentName}`);
 
+    const portName = Alexa.getSlotValue(r, 'Location');
+    const speakOutput = `The tide at ${portName} is coming in now, and high tide will be in 23 minutes, at 7.29pm`;
+    
     return handlerInput.responseBuilder
       .speak(speakOutput)
       // Uncomment the next line if you want to keep the session open so you can
@@ -107,6 +114,25 @@ const ErrorHandler = {
 };
 
 
+// The intent reflector is used for interaction model testing and debugging.
+// It will simply repeat the intent the user said. You can create custom handlers
+// for your intents by defining them above, then also adding them to the request
+// handler chain below.
+const IntentReflectorHandler = {
+  canHandle(handlerInput) {
+      return handlerInput.requestEnvelope.request.type === 'IntentRequest';
+  },
+  handle(handlerInput) {
+      const intentName = Alexa.getIntentName(handlerInput.requestEnvelope);
+      const speechText = `You just triggered ${intentName}`;
+
+      return handlerInput.responseBuilder
+          .speak(speechText)
+          //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+          .getResponse();
+  }
+};
+
 // log the JSON request to Amazon CloudWatch each time a request is received by the skill. 
 const RequestLog = {
     process(handlerInput) {
@@ -124,8 +150,13 @@ exports.handler = skillBuilder
     HelpHandler,
     ExitHandler,
     SessionEndedRequestHandler,
+    IntentReflectorHandler
   )
-  .addErrorHandlers(ErrorHandler)
-  .addRequestInterceptors(RequestLog)
-  .withCustomUserAgent('tide-table/v1')
+  .addErrorHandlers(
+    ErrorHandler
+  )
+  .addRequestInterceptors(
+    RequestLog
+  )
+  .withCustomUserAgent('tide-table/v1.0')
   .lambda();

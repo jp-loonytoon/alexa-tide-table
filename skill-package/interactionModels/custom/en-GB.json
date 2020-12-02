@@ -1,0 +1,52 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "tide table",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "NextHighTideIntent",
+          "slots": [
+            {
+              "name": "Location",
+              "type": "AMAZON.GB_CITY"
+            }
+          ],
+          "samples": [
+            "at {Location} when is the next high tide",
+            "when is the high tide at {Location}",
+            "when is high tide at {Location}",
+            "when is it high tide at {Location}",
+            "when is the next high tide at {Location}"
+          ]
+        }
+      ],
+      "types": [],
+      "modelConfiguration": {
+        "fallbackIntentSensitivity": {
+          "level": "LOW"
+        }
+      }
+    }
+  },
+  "version": "4"
+}
