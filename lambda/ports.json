@@ -1,0 +1,20 @@
+{
+    "version": "1.0",
+    "ports": [
+        { 
+            "name": "Portsmouth",
+            "latitude": "50.8036831",
+            "longitude": "-1.075614"
+        },
+        {
+            "name": "Dover",
+            "latitude": "51.1251275",
+            "longitude": "1.3134228"
+        },
+        {
+            "name": "Ullapool",
+            "latitude": "57.8978237",
+            "longitude": "-5.1586647"
+        }
+    ]
+}
