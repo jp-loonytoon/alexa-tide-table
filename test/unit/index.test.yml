@@ -20,7 +20,7 @@ configuration:
 - AMAZON.HelpIntent:
   - prompt: Where would you like to get the high tide for?
   - reprompt: Where would you like to get the high tide for?
-- NextHighTideIntent Location=Ullapool:
+- NextHighTideIntent Location=ullapool:
   - prompt:
     - It will be high tide at Ullapool in * hours and * minutes time
     - It will be high tide at Ullapool in * minutes time.

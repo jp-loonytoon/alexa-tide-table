@@ -136,9 +136,8 @@ const GetNextTideHandler = {
     console.log(`THIS.EVENT = GetNextTideHandler; with INTENT = ${intentName}`);
 
     const portName = Alexa.getSlotValue(r, 'Location');
-
     return new Promise(resolve => {
-      getTideInfo(HIGH_TIDE, portName, tideInfo => {
+      getTideInfo(HIGH_TIDE, toTitleCase(portName), tideInfo => {
         const speakOutput = tideInfo;
         console.log("Resolved promise");
         resolve(
