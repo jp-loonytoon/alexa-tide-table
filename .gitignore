@@ -1,5 +1,6 @@
 lambda/node_modules
 lambda/config.json
+config.json
 .ask/
 ask-resources.json
 *.log
