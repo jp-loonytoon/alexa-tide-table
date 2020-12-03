@@ -19,6 +19,18 @@ const HIGH_TIDE = "HIGH TIDE";
 const LOW_TIDE = "LOW TIDE";
 
 
+
+/**
+ * @param {str} a string you wish to convert to title case
+ * @returns the string converted to title text
+ */
+function toTitleCase(str) {
+	return str.replace(
+	  /\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+	);
+}
+
+
 /**
  * @param {requestedTideState} HIGH_TIDE or LOW_TIDE
  * @param {portName} the coastal location to get tide info for
@@ -62,9 +74,21 @@ async function getTideInfo(requestedTideState, portName) {
 			// STEP 3 - Return the relevant text to be included in the skill's response
 			// TODO we could add some randomness in here in future...
 			if (requestedTideState === LOW_TIDE) {
-				spokenResponse = `It will be low tide at ${portName} in ${numHours} hours and ${numMins} minutes time.`;
+				if (numHours >= 1) {
+					spokenResponse = `It will be low tide at ${portName} in ${numHours} hours and ${numMins} minutes time.`;
+				} else if (numMins >= 1) {
+					spokenResponse = `It will be low tide at ${portName} in ${numMins} minutes time.`;
+				} else {
+					spokenResponse = `It's low tide at ${portName} right now.`;
+				}
 			} else if (requestedTideState === HIGH_TIDE) {
-				spokenResponse = `It will be high tide at ${portName} in ${numHours} hours and ${numMins} minutes time.`;
+				if (numHours >= 1) {
+					spokenResponse = `It will be high tide at ${portName} in ${numHours} hours and ${numMins} minutes time.`;
+				} else if (numMins >= 1) {
+					spokenResponse = `It will be high tide at ${portName} in ${numMins} minutes time.`;
+				} else {
+					spokenResponse = `It's high tide at ${portName} right now.`;
+				}
 			}
 			console.log(spokenResponse);
 		} else {
@@ -79,11 +103,10 @@ async function getTideInfo(requestedTideState, portName) {
 	return spokenResponse;
 }
 
-const ullapool = listOfPorts.find(elem => elem.name === 'Ullapool');
-console.log(`Ullapool's location is LAT=${ullapool.latitude}, LONG=${ullapool.longitude}`);
-
-speakOutput = getTideInfo(HIGH_TIDE, 'Ullapool');
+speakOutput = getTideInfo(HIGH_TIDE, toTitleCase('wick'));
 console.log(speakOutput);
+
+
 
 // useful for debug...
 function printListOfPorts() {
