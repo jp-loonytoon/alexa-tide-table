@@ -1,13 +1,9 @@
 /* 
-	https://api.hood.land/api/tides
+	Test script to use Google and Rapid APIs to access location and tide info.
 
-	STEP 1 - use Google Maps Platform to get Lat/Long
-	API_KEY=AIzaSyDAvHu2mSi0RbhcRuUL3Nn6haQcXdo5yGA
-	
-	curl https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&types=food&name=harbour&key=AIzaSyDAvHu2mSi0RbhcRuUL3Nn6haQcXdo5yGA
-
-curl https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Museum%20of%20Contemporary%20Art%20Australia&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key=AIzaSyDAvHu2mSi0RbhcRuUL3Nn6haQcXdo5yGA
-
+	STEP 1 - Use Google Maps Platform to get Lat/Long
+	STEP 2 - Call the Tides API to get the tidal info
+	STEP 3 - Return the relevant text to be included in the skill's response
 */
 
 const axios = require('axios');
