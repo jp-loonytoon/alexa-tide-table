@@ -30,9 +30,10 @@ function toTitleCase(str) {
 /**
  * @param {requestedTideState} HIGH_TIDE or LOW_TIDE
  * @param {portName} the coastal location to get tide info for
+ * @param {callback} the callback function for use by the Promise
  * @returns a string containing the spoken output to return for the intent
  */
-async function getTideInfo(requestedTideState, portName) {
+function getTideInfo(requestedTideState, portName, callback) {
 	let spokenResponse = "";
 
 	// STEP 1 - Find the Lat/Long for the port
@@ -41,62 +42,64 @@ async function getTideInfo(requestedTideState, portName) {
 	console.log(`%%% Port = ${portInfo.name}, lat=${portInfo.latitude}, lon=${portInfo.longitude}`);
 
 	// STEP 2 - Call the Tides API to get the tidal info
-	try {
-		let response = await axios.get('https://tides.p.rapidapi.com/tides', {
-			headers: {
-				"x-rapidapi-key": RAPIDAPI_KEY,
-				"x-rapidapi-host": "tides.p.rapidapi.com",
-				"accept": "application/json",
-				"user-agent": "tide-table/v1.0"
-			},
-			params: {
-				latitude: portInfo.latitude,
-				longitude: portInfo.longitude,
-				radius: 25,
-				interval: 0,
-				duration: 1440
-			}
-		});
-
+	axios.get('https://tides.p.rapidapi.com/tides', {
+		headers: {
+		"x-rapidapi-key": RAPIDAPI_KEY,
+		"x-rapidapi-host": "tides.p.rapidapi.com",
+		"accept": "application/json",
+		"user-agent": "tide-table/v1.0"
+		},
+		params: {
+		latitude: portInfo.latitude,
+		longitude: portInfo.longitude,
+		radius: 25,
+		interval: 0,
+		duration: 1440
+		}
+	})
+	.then(function(response) {
 		// STEP 3 - Return the relevant text to be included in the skill's response
 		if (response && response.status === 200 && response.data) {
-			const extremes = response.data.extremes;
-			const nextTide = extremes.find(elem => elem.state === requestedTideState);
-			const nextTideTime = nextTide.timestamp;
-			console.log(nextTide);
-			const timeNow = Math.floor(Date.now() / 1000);
-			const timeToNextTide = nextTideTime - timeNow;
-			const numHours = Math.floor(timeToNextTide / 3600);
-			const numMins = Math.floor((timeToNextTide - (numHours * 3600)) / 60);
+		const extremes = response.data.extremes;
+		const nextTide = extremes.find(elem => elem.state === requestedTideState);
+		const nextTideTime = nextTide.timestamp;
+		console.log(nextTide);
+		const timeNow = Math.floor(Date.now() / 1000);
+		const timeToNextTide = nextTideTime - timeNow;
+		const numHours = Math.floor(timeToNextTide / 3600);
+		const numMins = Math.floor((timeToNextTide - (numHours * 3600)) / 60);
 
-			// STEP 3 - Return the relevant text to be included in the skill's response
-			// TODO we could add some randomness in here in future...
-			if (requestedTideState === LOW_TIDE) {
-				if (numHours >= 1) {
-					spokenResponse = `It will be low tide at ${portName} in ${numHours} hours and ${numMins} minutes time.`;
-				} else if (numMins >= 1) {
-					spokenResponse = `It will be low tide at ${portName} in ${numMins} minutes time.`;
-				} else {
-					spokenResponse = `It's low tide at ${portName} right now.`;
+		// STEP 3 - Return the relevant text to be included in the skill's response
+		// TODO we could add some randomness in here in future...
+				let tideState = "";
+				if (requestedTideState === LOW_TIDE) {
+					tideState = "low tide";
+				} else if (requestedTideState === HIGH_TIDE) {
+					tideState = "high tide";
 				}
-			} else if (requestedTideState === HIGH_TIDE) {
-				if (numHours >= 1) {
-					spokenResponse = `It will be high tide at ${portName} in ${numHours} hours and ${numMins} minutes time.`;
-				} else if (numMins >= 1) {
-					spokenResponse = `It will be high tide at ${portName} in ${numMins} minutes time.`;
+				if (numHours > 1) {
+					spokenResponse = `It will be ${tideState} at ${portName} in ${numHours} hours and ${numMins} minutes time.`;
+				} else if (numHours == 1) {
+					spokenResponse = `It will be ${tideState} at ${portName} in ${numHours} hour and ${numMins} minutes time.`;
+				} else if (numMins > 1) {
+					spokenResponse = `It will be ${tideState} at ${portName} in ${numMins} minutes time.`;
+				} else if (numMins == 1) {
+					spokenResponse = `It will be ${tideState} at ${portName} in ${numMins} minute time.`;       
 				} else {
-					spokenResponse = `It's high tide at ${portName} right now.`;
+					spokenResponse = `It's ${tideState} at ${portName} right now.`;
 				}
-			}
-			console.log(spokenResponse);
 		} else {
-			spokenResponse = `I'm sorry, the API we use to get tide information for ${portName} returned an error. Try again later.`;
+		spokenResponse = `I'm sorry, the API we use to get tide information for ${portName} returned an error. Try again later.`;
 		}
-	} catch (error) {
-		console.error(error);
+		callback(spokenResponse);
+	})
+	.catch(function (error) {
+		console.log(error);
 		spokenResponse = `I'm sorry, there was some error trying to get tidal information for ${portName}.`;
-	}
-
+	})
+	.then(function () {
+		console.log("Promise for Rapid API call has completed");
+	});
 
 	return spokenResponse;
 }
@@ -104,6 +107,16 @@ async function getTideInfo(requestedTideState, portName) {
 speakOutput = getTideInfo(HIGH_TIDE, toTitleCase('wick'));
 console.log(speakOutput);
 
+const portName = 'ullapool';
+return new Promise(resolve => {
+  getTideInfo(HIGH_TIDE, toTitleCase(portName), tideInfo => {
+	const speakOutput = tideInfo;
+	console.log("Resolved promise");
+	resolve(
+		console.log(speakOutput)
+	);
+  });
+});
 
 
 // useful for debug...

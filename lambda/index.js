@@ -45,7 +45,9 @@ function getTideInfo(requestedTideState, portName, callback) {
   axios.get('https://tides.p.rapidapi.com/tides', {
     headers: {
       "x-rapidapi-key": RAPIDAPI_KEY,
-      "x-rapidapi-host": "tides.p.rapidapi.com"
+      "x-rapidapi-host": "tides.p.rapidapi.com",
+      "accept": "application/json",
+      "user-agent": "tide-table/v1.0"
     },
     params: {
       latitude: portInfo.latitude,
@@ -69,23 +71,23 @@ function getTideInfo(requestedTideState, portName, callback) {
 
       // STEP 3 - Return the relevant text to be included in the skill's response
       // TODO we could add some randomness in here in future...
-      if (requestedTideState === LOW_TIDE) {
-        if (numHours >= 1) {
-          spokenResponse = `It will be low tide at ${portName} in ${numHours} hours and ${numMins} minutes time.`;
-        } else if (numMins >= 1) {
-          spokenResponse = `It will be low tide at ${portName} in ${numMins} minutes time.`;
-        } else {
-          spokenResponse = `It's low tide at ${portName} right now.`;
-        }
-      } else if (requestedTideState === HIGH_TIDE) {
-        if (numHours >= 1) {
-          spokenResponse = `It will be high tide at ${portName} in ${numHours} hours and ${numMins} minutes time.`;
-        } else if (numMins >= 1) {
-          spokenResponse = `It will be high tide at ${portName} in ${numMins} minutes time.`;
-        } else {
-          spokenResponse = `It's high tide at ${portName} right now.`;
-        }
-      }
+			let tideState = "";
+			if (requestedTideState === LOW_TIDE) {
+				tideState = "low tide";
+			} else if (requestedTideState === HIGH_TIDE) {
+				tideState = "high tide";
+			}
+			if (numHours > 1) {
+				spokenResponse = `It will be ${tideState} at ${portName} in ${numHours} hours and ${numMins} minutes time.`;
+			} else if (numHours == 1) {
+				spokenResponse = `It will be ${tideState} at ${portName} in ${numHours} hour and ${numMins} minutes time.`;
+			} else if (numMins > 1) {
+				spokenResponse = `It will be ${tideState} at ${portName} in ${numMins} minutes time.`;
+			} else if (numMins == 1) {
+				spokenResponse = `It will be ${tideState} at ${portName} in ${numMins} minute time.`;       
+			} else {
+				spokenResponse = `It's ${tideState} at ${portName} right now.`;
+			}
     } else {
       spokenResponse = `I'm sorry, the API we use to get tide information for ${portName} returned an error. Try again later.`;
     }
