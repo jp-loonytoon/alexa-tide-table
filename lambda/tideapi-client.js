@@ -11,13 +11,13 @@ curl https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=Mus
 */
 
 const axios = require('axios');
+const config = require('./config.json');
 const portsDB = require('./ports.json');
 const listOfPorts = portsDB.ports;
 
-const RAPIDAPI_KEY = "9901cd1ec3mshb4180d89857beb9p17fe17jsn20bd8bd44375";
+const RAPIDAPI_KEY = config.RAPIDAPI_KEY;
 const HIGH_TIDE = "HIGH TIDE";
 const LOW_TIDE = "LOW TIDE";
-
 
 
 /**
@@ -49,7 +49,9 @@ async function getTideInfo(requestedTideState, portName) {
 		let response = await axios.get('https://tides.p.rapidapi.com/tides', {
 			headers: {
 				"x-rapidapi-key": RAPIDAPI_KEY,
-				"x-rapidapi-host": "tides.p.rapidapi.com"
+				"x-rapidapi-host": "tides.p.rapidapi.com",
+				"accept": "application/json",
+				"user-agent": "tide-table/v1.0"
 			},
 			params: {
 				latitude: portInfo.latitude,

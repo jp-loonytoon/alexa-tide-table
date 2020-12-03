@@ -1,10 +1,11 @@
 // sets up dependencies
 const Alexa = require('ask-sdk-core');
 const axios = require('axios');
+const config = require('./config.json');
 const portsDB = require('./ports.json');
 const listOfPorts = portsDB.ports;
 
-const RAPIDAPI_KEY = "9901cd1ec3mshb4180d89857beb9p17fe17jsn20bd8bd44375";
+const RAPIDAPI_KEY = config.RAPIDAPI_KEY;
 const HIGH_TIDE = "HIGH TIDE";
 const LOW_TIDE = "LOW TIDE";
 
