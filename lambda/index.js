@@ -2,15 +2,21 @@
 const Alexa = require('ask-sdk-core');
 const axios = require('axios');
 const config = require('./config.json');
-const portsDB = require('./ports.json');
-const listOfPorts = portsDB.ports;
 
+const USER_AGENT = "tide-table/v1.0";
 const RAPIDAPI_KEY = config.RAPIDAPI_KEY;
+const GOOGLE_MAPS_API_KEY = config.GOOGLE_MAPS_API_KEY;
+
+// default params for Tides API
+const DEFAULT_RADIUS = 25;			// if no prediction is found in requested coordinates widen the search by this distance (in kms)
+const DEFAULT_INTERVAL = 0;			// don't return interval measurements
+const DEFAULT_DURATION = 24 * 60;	// return data for next 24 hours
+
 const HIGH_TIDE = "HIGH TIDE";
 const LOW_TIDE = "LOW TIDE";
 
-let region = process.env.AWS_REGION
-let versionInfo = process.env.AWS_LAMBDA_FUNCTION_NAME + "/" + process.env.AWS_LAMBDA_FUNCTION_VERSION;
+const region = process.env.AWS_REGION
+const versionInfo = process.env.AWS_LAMBDA_FUNCTION_NAME + "/" + process.env.AWS_LAMBDA_FUNCTION_VERSION;
 
 
 
