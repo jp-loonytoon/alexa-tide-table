@@ -36,22 +36,39 @@ function toTitleCase(str) {
  */
 function getPortLocation(portName) {
 	return new Promise((resolve, reject) => {
-		console.log(`### getting geo-location for ${portName}`);
+		// the p record will store location info for the port
+		const p = {
+			name: toTitleCase(portName),
+			latitude: "",
+			longitude: ""
+		};
 
-		// 'producing' code that generates the data
-		// will be replaced by the Google API code
-		setTimeout(function() {
-			console.log('retrieved port location');
-			const p = {
-				name: portName,
-				latitude: '50.3',
-				longitdue: '-1.23'
-			};
-			resolve(p)	 // TODO: This will resolve to the result of the Google API call
-		 }, 1000);
+		// call the Places API from Google Maps to get the tidal info
+		axios.get('https://maps.googleapis.com/maps/api/place/findplacefromtext/json', {
+			headers: {
+				"accept": "application/json",
+				"user-agent": USER_AGENT
+			},
+			params: {
+				key: GOOGLE_MAPS_API_KEY,
+				input: p.name,
+				inputtype: "textquery",
+				fields: "name,geometry"
+			}
+		})
+		.then(function(response) {		// fill in the p record and resolve the promise
+			if (response && response.status === 200 && response.data) {
+				const result = response.data.candidates[0];
+				console.log(`Found location "${result.name}" for port "${p.name}"`);
+				p.latitude = result.geometry.location.lat;
+				p.longitude = result.geometry.location.lng;
+				resolve(p);
+			} else {					// or reject if there was a problem
+				reject(response.status);
+			}
+		});
 	});
-
- };
+ }
 
 
 function getTideInfo(requestedTideState, portName, latitude, longitude) {
@@ -78,10 +95,10 @@ function speakOutput(value) {
 	console.log(value);
 }
 
-let port = 'Ullapool'
+let port = 'inverness';
 let promise = getPortLocation(port);
 promise.then((portInfo) => {
-	console.log("This is in the then " + portInfo.name);
+	console.log(`${portInfo.name} is at latitude ${portInfo.latitude} and longitude ${portInfo.longitude}.`);
 })
 
 // useful for debug...
