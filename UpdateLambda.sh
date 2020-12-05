@@ -10,5 +10,5 @@ zip -rq tidetable.zip *
 mv tidetable.zip ..
 cd ..
 aws lambda update-function-code --function-name $LAMBDA_NAME \
-    --zip-file fileb://tidetable.zip --output yaml
+    --zip-file fileb://tidetable.zip --output yaml &
 
