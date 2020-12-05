@@ -7,11 +7,14 @@
 */
 
 const axios = require('axios');
+const {Client} = require("@googlemaps/google-maps-services-js");
 const config = require('./config.json');
 const portsDB = require('./ports.json');
 const listOfPorts = portsDB.ports;
 
+const USER_AGENT = "tide-table/v1.0";
 const RAPIDAPI_KEY = config.RAPIDAPI_KEY;
+const GOOGLE_MAPS_API_KEY = config.GOOGLE_MAPS_API_KEY;
 const HIGH_TIDE = "HIGH TIDE";
 const LOW_TIDE = "LOW TIDE";
 
@@ -28,96 +31,58 @@ function toTitleCase(str) {
 
 
 /**
- * @param {requestedTideState} HIGH_TIDE or LOW_TIDE
- * @param {portName} the coastal location to get tide info for
- * @param {callback} the callback function for use by the Promise
- * @returns a string containing the spoken output to return for the intent
+ * @param {portName} the coastal location to get location info for
+ * @returns a portInfo object containing latitude and longitude
  */
-function getTideInfo(requestedTideState, portName, callback) {
-	let spokenResponse = "";
+function getPortLocation(portName) {
+	return new Promise((resolve, reject) => {
+		console.log(`### getting geo-location for ${portName}`);
 
-	// STEP 1 - Find the Lat/Long for the port
-	// TODO: change from using local db to Google Places API
-	const portInfo = listOfPorts.find(elem => elem.name === portName);
-	console.log(`%%% Port = ${portInfo.name}, lat=${portInfo.latitude}, lon=${portInfo.longitude}`);
-
-	// STEP 2 - Call the Tides API to get the tidal info
-	axios.get('https://tides.p.rapidapi.com/tides', {
-		headers: {
-		"x-rapidapi-key": RAPIDAPI_KEY,
-		"x-rapidapi-host": "tides.p.rapidapi.com",
-		"accept": "application/json",
-		"user-agent": "tide-table/v1.0"
-		},
-		params: {
-		latitude: portInfo.latitude,
-		longitude: portInfo.longitude,
-		radius: 25,
-		interval: 0,
-		duration: 1440
-		}
-	})
-	.then(function(response) {
-		// STEP 3 - Return the relevant text to be included in the skill's response
-		if (response && response.status === 200 && response.data) {
-		const extremes = response.data.extremes;
-		const nextTide = extremes.find(elem => elem.state === requestedTideState);
-		const nextTideTime = nextTide.timestamp;
-		console.log(nextTide);
-		const timeNow = Math.floor(Date.now() / 1000);
-		const timeToNextTide = nextTideTime - timeNow;
-		const numHours = Math.floor(timeToNextTide / 3600);
-		const numMins = Math.floor((timeToNextTide - (numHours * 3600)) / 60);
-
-		// STEP 3 - Return the relevant text to be included in the skill's response
-		// TODO we could add some randomness in here in future...
-				let tideState = "";
-				if (requestedTideState === LOW_TIDE) {
-					tideState = "low tide";
-				} else if (requestedTideState === HIGH_TIDE) {
-					tideState = "high tide";
-				}
-				if (numHours > 1) {
-					spokenResponse = `It will be ${tideState} at ${portName} in ${numHours} hours and ${numMins} minutes time.`;
-				} else if (numHours == 1) {
-					spokenResponse = `It will be ${tideState} at ${portName} in ${numHours} hour and ${numMins} minutes time.`;
-				} else if (numMins > 1) {
-					spokenResponse = `It will be ${tideState} at ${portName} in ${numMins} minutes time.`;
-				} else if (numMins == 1) {
-					spokenResponse = `It will be ${tideState} at ${portName} in ${numMins} minute time.`;       
-				} else {
-					spokenResponse = `It's ${tideState} at ${portName} right now.`;
-				}
-		} else {
-		spokenResponse = `I'm sorry, the API we use to get tide information for ${portName} returned an error. Try again later.`;
-		}
-		callback(spokenResponse);
-	})
-	.catch(function (error) {
-		console.log(error);
-		spokenResponse = `I'm sorry, there was some error trying to get tidal information for ${portName}.`;
-	})
-	.then(function () {
-		console.log("Promise for Rapid API call has completed");
+		// 'producing' code that generates the data
+		// will be replaced by the Google API code
+		setTimeout(function() {
+			console.log('retrieved port location');
+			const p = {
+				name: portName,
+				latitude: '50.3',
+				longitdue: '-1.23'
+			};
+			resolve(p)	 // TODO: This will resolve to the result of the Google API call
+		 }, 1000);
 	});
 
-	return spokenResponse;
+ };
+
+
+function getTideInfo(requestedTideState, portName, latitude, longitude) {
+	return new Promise((resolve, reject) => {
+		console.log(`### getting tide info ${requestedTideState} for ${portName}`);
+		setTimeout(function() {
+			const t = {
+				name: portName,
+				latitude: latitude,
+				longitdue: longitude,
+				hrs: 4,
+				mins: 16
+			};
+			console.log('retrieved tideinfo');
+			resolve(t)
+		 }, 200);
+	});
 }
 
-speakOutput = getTideInfo(HIGH_TIDE, toTitleCase('wick'));
-console.log(speakOutput);
 
-const portName = 'ullapool';
-return new Promise(resolve => {
-  getTideInfo(HIGH_TIDE, toTitleCase(portName), tideInfo => {
-	const speakOutput = tideInfo;
-	console.log("Resolved promise");
-	resolve(
-		console.log(speakOutput)
-	);
-  });
-});
+// attempt to resolve into speakable text whatever the
+// value is
+function speakOutput(value) {
+	console.log(value);
+}
 
+let port = 'Ullapool'
+let promise = getPortLocation(port);
+promise.then((portInfo) => {
+	console.log("This is in the then " + portInfo.name);
+})
 
 // useful for debug...
 function printListOfPorts() {
