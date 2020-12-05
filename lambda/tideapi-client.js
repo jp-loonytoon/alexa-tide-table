@@ -77,6 +77,23 @@ function getPortLocation(portName) {
 
 
 /**
+ * @param {extremes} tidal extremes record from Tides API
+ * @param {tideState} HIGH_TIDE or LOW_TIDE
+ * @returns the time until the next tide (in seconds)
+ */
+function getNextTideData(extremes, tideState) {
+	const timeNow = Math.floor(Date.now() / 1000);
+	const nextTide = extremes.find(
+		elem => elem.state === tideState && elem.timestamp > timeNow
+	);
+	const nextTideTime = nextTide.timestamp;
+	const timeToNextTide = nextTideTime - timeNow;
+
+	return timeToNextTide;
+}
+
+
+/**
  * @param {portInfo} the coastal location to get tide info for
  * @param {tideState} HIGH_TIDE or LOW_TIDE
  * @returns a tideInfo object containing info on the next tide for the given port
@@ -114,11 +131,9 @@ function getTideInfo(portInfo, tideState) {
 		})
 		.then(function(response) {
 			if (response && response.status === 200 && response.data) {
+				console.log(response.data);
 				const result = response.data.extremes;
-				const nextTide = result.find(elem => elem.state === tideState);
-				const nextTideTime = nextTide.timestamp;
-				const timeNow = Math.floor(Date.now() / 1000);
-				const timeToNextTide = nextTideTime - timeNow;
+				const timeToNextTide = getNextTideData(result, tideState);
 				t.hoursUntil = Math.floor(timeToNextTide / 3600);
 				t.minutesUntil = Math.floor((timeToNextTide - (t.hoursUntil * 3600)) / 60);
 				resolve(t);
@@ -187,7 +202,7 @@ function speakTideInfo(port, tidestate) {
 }
 
 
-speakTideInfo('Portland', HIGH_TIDE)
+speakTideInfo('ramsgate', HIGH_TIDE)
 	.then((speech) => {
 		console.log(speech);
 	});

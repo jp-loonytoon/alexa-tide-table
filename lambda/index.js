@@ -35,98 +35,188 @@ function toTitleCase(str) {
 
 
 /**
- * @param {requestedTideState} HIGH_TIDE or LOW_TIDE
- * @param {portName} the coastal location to get tide info for
- * @returns a string containing the spoken output to return for the intent
+ * @param {portName} the coastal location to get location info for
+ * @returns a portInfo object containing name, latitude and longitude of port
  */
-function getTideInfo(requestedTideState, portName, callback) {
-	let spokenResponse = "";
+function getPortLocation(portName) {
+	return new Promise((resolve, reject) => {
+		// the p record will store location info for the port
+		const p = {
+			name: toTitleCase(portName),
+			latitude: "",
+			longitude: ""
+		};
 
-	// STEP 1 - Find the Lat/Long for the port
-	// TODO: change from using local db to Google Places API
-	const portInfo = listOfPorts.find(elem => elem.name === portName);
-	console.log(`%%% Port = ${portInfo.name}, lat=${portInfo.latitude}, lon=${portInfo.longitude}`);
-
-  // STEP 2 - Call the Tides API to get the tidal info
-  axios.get('https://tides.p.rapidapi.com/tides', {
-    headers: {
-      "x-rapidapi-key": RAPIDAPI_KEY,
-      "x-rapidapi-host": "tides.p.rapidapi.com",
-      "accept": "application/json",
-      "user-agent": "tide-table/v1.0"
-    },
-    params: {
-      latitude: portInfo.latitude,
-      longitude: portInfo.longitude,
-      radius: 25,
-      interval: 0,
-      duration: 1440
-    }
-  })
-  .then(function(response) {
-    // STEP 3 - Return the relevant text to be included in the skill's response
-    if (response && response.status === 200 && response.data) {
-      const extremes = response.data.extremes;
-      const nextTide = extremes.find(elem => elem.state === requestedTideState);
-      const nextTideTime = nextTide.timestamp;
-      console.log(nextTide);
-      const timeNow = Math.floor(Date.now() / 1000);
-      const timeToNextTide = nextTideTime - timeNow;
-      const numHours = Math.floor(timeToNextTide / 3600);
-      const numMins = Math.floor((timeToNextTide - (numHours * 3600)) / 60);
-
-      // STEP 3 - Return the relevant text to be included in the skill's response
-      // TODO we could add some randomness in here in future...
-			let tideState = "";
-			if (requestedTideState === LOW_TIDE) {
-				tideState = "low tide";
-			} else if (requestedTideState === HIGH_TIDE) {
-				tideState = "high tide";
+		// call the Places API from Google Maps to get the tidal info
+		axios.get('https://maps.googleapis.com/maps/api/place/findplacefromtext/json', {
+			headers: {
+				"accept": "application/json",
+				"user-agent": USER_AGENT
+			},
+			params: {
+				key: GOOGLE_MAPS_API_KEY,
+				input: p.name,
+				inputtype: "textquery",
+				fields: "name,geometry"
 			}
-			if (numHours > 1) {
-				spokenResponse = `It will be ${tideState} at ${portName} in ${numHours} hours and ${numMins} minutes time.`;
-			} else if (numHours == 1) {
-				spokenResponse = `It will be ${tideState} at ${portName} in ${numHours} hour and ${numMins} minutes time.`;
-			} else if (numMins > 1) {
-				spokenResponse = `It will be ${tideState} at ${portName} in ${numMins} minutes time.`;
-			} else if (numMins == 1) {
-				spokenResponse = `It will be ${tideState} at ${portName} in ${numMins} minute time.`;       
+		})
+		.then(function(response) {		// fill in the p record and resolve the promise
+			if (response && response.status === 200 && response.data) {
+				const result = response.data.candidates[0];
+				console.log(`Found location "${result.name}" for port "${p.name}"`);
+				p.latitude = result.geometry.location.lat;
+				p.longitude = result.geometry.location.lng;
+				resolve(p);
+			} else {					// or reject if there was a problem
+				reject(response.status);
+			}
+		});
+	});
+ }
+
+
+/**
+ * @param {extremes} tidal extremes record from Tides API
+ * @param {tideState} HIGH_TIDE or LOW_TIDE
+ * @returns the time until the next tide (in seconds)
+ */
+function getNextTideData(extremes, tideState) {
+	const timeNow = Math.floor(Date.now() / 1000);
+	const nextTide = extremes.find(
+		elem => elem.state === tideState && elem.timestamp > timeNow
+	);
+	const nextTideTime = nextTide.timestamp;
+	const timeToNextTide = nextTideTime - timeNow;
+
+	return timeToNextTide;
+}
+
+
+/**
+ * @param {portInfo} the coastal location to get tide info for
+ * @param {tideState} HIGH_TIDE or LOW_TIDE
+ * @returns a tideInfo object containing info on the next tide for the given port
+ */
+function getTideInfo(portInfo, tideState) {
+	return new Promise((resolve, reject) => {
+		// the t record will store tide info for the port
+		const t = {
+			name: portInfo.name,
+			latitude: portInfo.latitude,
+			longitude: portInfo.longitude,
+			state: tideState,
+			tidalTimezone: "UTC",   
+			deviceTimezone: "UTC",   // for future support of non-UK zones
+			hoursUntil: 0,
+			minutesUntil: 0,
+			isTomorrow: false
+		};
+
+		// call the Tides API to get the tidal info
+		axios.get('https://tides.p.rapidapi.com/tides', {
+			headers: {
+				"x-rapidapi-key": RAPIDAPI_KEY,
+				"x-rapidapi-host": "tides.p.rapidapi.com",
+				"accept": "application/json",
+				"user-agent": USER_AGENT
+			},
+			params: {
+				latitude: portInfo.latitude,
+				longitude: portInfo.longitude,
+				radius: DEFAULT_RADIUS,
+				interval: DEFAULT_INTERVAL,
+				duration: DEFAULT_DURATION
+			}
+		})
+		.then(function(response) {
+			if (response && response.status === 200 && response.data) {
+				console.log(response.data);
+				const result = response.data.extremes;
+				const timeToNextTide = getNextTideData(result, tideState);
+				t.hoursUntil = Math.floor(timeToNextTide / 3600);
+				t.minutesUntil = Math.floor((timeToNextTide - (t.hoursUntil * 3600)) / 60);
+				resolve(t);
 			} else {
-				spokenResponse = `It's ${tideState} at ${portName} right now.`;
+				reject(response.data.error);
 			}
-    } else {
-      spokenResponse = `I'm sorry, the API we use to get tide information for ${portName} returned an error. Try again later.`;
-    }
-    callback(spokenResponse);
-  })
-  .catch(function (error) {
-    console.log(error);
-    spokenResponse = `I'm sorry, there was some error trying to get tidal information for ${portName}.`;
-  })
-  .then(function () {
-    console.log("Promise for Rapid API call has completed");
-  });
+		})
+		.catch(function(error) {
+			console.error(error);
+		});
+	});
+}
 
-	return spokenResponse;
+
+/**
+ * @param {port} the name of the port
+ * @param {tideState} HIGH_TIDE or LOW_TIDE
+ * @returns a string containing the text to speak
+ */
+function speakTideInfo(port, tidestate) {
+	return new Promise((resolve, reject) => {
+		let spokenResponse = "";
+
+		getPortLocation(port)
+			.then((portInfo) => {
+				console.log(`${portInfo.name} is at latitude ${portInfo.latitude} and longitude ${portInfo.longitude}.`);
+				return getTideInfo(portInfo, tidestate);
+			})
+			.then((tideInfo) => {
+				let tideDescription = "";
+				if (tideInfo.state === LOW_TIDE) {
+					tideDescription = "low tide";
+				} else if (tideInfo.state === HIGH_TIDE) {
+					tideDescription = "high tide";
+				}
+				// first handle cases where time to tide is < 1 hour
+				if (tideInfo.hoursUntil === 0 && tideInfo.minutesUntil === 0) {
+					spokenResponse = `It's ${tideDescription} at ${tideInfo.name} right now.`;
+				} else if (tideInfo.hoursUntil === 0 && tideInfo.minutesUntil > 1) {
+					spokenResponse = `It will be ${tideDescription} at ${tideInfo.name} in ` +
+						`${tideInfo.minutesUntil} minutes.`;
+				} else if (tideInfo.hoursUntil === 0 && tideInfo.minutesUntil === 1) {
+					spokenResponse = `It will be ${tideDescription} at ${tideInfo.name} in ` +
+						`${tideInfo.minutesUntil} minute.`;
+				} else {
+					// now handle cases where it is >= 1 hour
+					if (tideInfo.hoursUntil > 1) {
+						spokenResponse = `It will be ${tideDescription} at ${tideInfo.name} in ` +
+							`${tideInfo.hoursUntil} hours`;
+					} else if (tideInfo.hoursUntil === 1) {
+						spokenResponse = `It will be ${tideDescription} at ${tideInfo.name} in ` +
+							`${tideInfo.hoursUntil} hour`;
+					}
+					if (tideInfo.minutesUntil > 1) {
+						spokenResponse += ` and ${tideInfo.minutesUntil} minutes.`;
+					} else if (tideInfo.hoursUntil === 1) {
+						spokenResponse += ` and ${tideInfo.minutesUntil} minute.`;
+					} else if (tideInfo.hoursUntil === 0) {
+						spokenResponse += ` exactly.`;
+					}
+				}
+
+				resolve(spokenResponse);
+			});
+	});
 }
 
 
 // Intent Handling Functions ///////////////////////////////////
 
 const LaunchRequestHandler = {
-    canHandle(handlerInput) {
-      return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
-    },
-    handle(handlerInput) {
-      console.log(`THIS.EVENT = LaunchRequestHandler running on ${region}`);
-      console.log(`VERSION INFO = ${versionInfo}`)
-      const speakOutput = 'Where would you like to find the high tide for?';
-      return handlerInput.responseBuilder
-          .speak(speakOutput)
-          .reprompt(speakOutput)
-          .withSimpleCard('Tide Table', speakOutput)
-          .getResponse();
-    }
+  canHandle(handlerInput) {
+    return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
+  },
+  handle(handlerInput) {
+    console.log(`THIS.EVENT = LaunchRequestHandler running on ${region}`);
+    console.log(`VERSION INFO = ${versionInfo}`)
+    const speakOutput = 'Where would you like to find the high tide for?';
+    return handlerInput.responseBuilder
+        .speak(speakOutput)
+        .reprompt(speakOutput)
+        .withSimpleCard('Tide Table', speakOutput)
+        .getResponse();
+  }
 };
 
 
@@ -142,22 +232,23 @@ const GetNextTideHandler = {
   handle(handlerInput) {
     const r = handlerInput.requestEnvelope;
     const intentName = Alexa.getIntentName(r);
-    console.log(`THIS.EVENT = GetNextTideHandler; with INTENT = ${intentName}`);
-
     const portName = Alexa.getSlotValue(r, 'Location');
-    return new Promise(resolve => {
-      getTideInfo(HIGH_TIDE, toTitleCase(portName), tideInfo => {
-        const speakOutput = tideInfo;
-        console.log("Resolved promise");
-        resolve(
-          handlerInput.responseBuilder
-            .speak(speakOutput)
-            .getResponse()
-        );
-      });
-    });
-  },
+    console.log(`THIS.EVENT = GetNextTideHandler; with INTENT = ${intentName} and port name = ${portName}`);
+   
+    return new Promise((resolve, reject) => {
+      speakTideInfo(portName, HIGH_TIDE)
+      	.then((speechOutput) => {
+        	console.log(speechOutput);
+        	resolve(
+          		handlerInput.responseBuilder
+            	.speak(speechOutput)
+            	.getResponse()
+        	);
+        });
+    });    
+  }
 };
+
 
 
 // handles the user asking for help
