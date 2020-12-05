@@ -139,49 +139,55 @@ function getTideInfo(portInfo, tideState) {
  * @returns a string containing the text to speak
  */
 function speakTideInfo(port, tidestate) {
-	let spokenResponse = "";
+	return new Promise((resolve, reject) => {
+		let spokenResponse = "";
 
-	getPortLocation(port)
-		.then((portInfo) => {
-			console.log(`${portInfo.name} is at latitude ${portInfo.latitude} and longitude ${portInfo.longitude}.`);
-			return getTideInfo(portInfo, tidestate);
-		})
-		.then((tideInfo) => {
-			let tideDescription = "";
-			if (tideInfo.state === LOW_TIDE) {
-				tideDescription = "low tide";
-			} else if (tideInfo.state === HIGH_TIDE) {
-				tideDescription = "high tide";
-			}
-			// first handle cases where time to tide is < 1 hour
-			if (tideInfo.hoursUntil === 0 && tideInfo.minutesUntil === 0) {
-				spokenResponse = `It's ${tideDescription} at ${tideInfo.name} right now.`;
-			} else if (tideInfo.hoursUntil === 0 && tideInfo.minutesUntil > 1) {
-				spokenResponse = `It will be ${tideDescription} at ${tideInfo.name} in ` +
-					`${tideInfo.minutesUntil} minutes`;
-			} else if (tideInfo.hoursUntil === 0 && tideInfo.minutesUntil === 1) {
-				spokenResponse = `It will be ${tideDescription} at ${tideInfo.name} in ` +
-					`${tideInfo.minutesUntil} minute`;
-			} else {
-				// now handle cases where it is >= 1 hour
-				if (tideInfo.hoursUntil > 1) {
-					spokenResponse = `It will be ${tideDescription} at ${tideInfo.name} in ` +
-						`${tideInfo.hoursUntil} hours`;
-				} else if (tideInfo.hoursUntil === 1) {
-					spokenResponse = `It will be ${tideDescription} at ${tideInfo.name} in ` +
-						`${tideInfo.hoursUntil} hour`;
+		getPortLocation(port)
+			.then((portInfo) => {
+				console.log(`${portInfo.name} is at latitude ${portInfo.latitude} and longitude ${portInfo.longitude}.`);
+				return getTideInfo(portInfo, tidestate);
+			})
+			.then((tideInfo) => {
+				let tideDescription = "";
+				if (tideInfo.state === LOW_TIDE) {
+					tideDescription = "low tide";
+				} else if (tideInfo.state === HIGH_TIDE) {
+					tideDescription = "high tide";
 				}
-				if (tideInfo.minutesUntil > 1) {
-					spokenResponse += ` and ${tideInfo.minutesUntil} minutes`;
-				} else if (tideInfo.hoursUntil === 1) {
-					spokenResponse += ` and ${tideInfo.minutesUntil} minute`;
-				} else if (tideInfo.hoursUntil === 0) {
-					spokenResponse += ` exactly`;
+				// first handle cases where time to tide is < 1 hour
+				if (tideInfo.hoursUntil === 0 && tideInfo.minutesUntil === 0) {
+					spokenResponse = `It's ${tideDescription} at ${tideInfo.name} right now.`;
+				} else if (tideInfo.hoursUntil === 0 && tideInfo.minutesUntil > 1) {
+					spokenResponse = `It will be ${tideDescription} at ${tideInfo.name} in ` +
+						`${tideInfo.minutesUntil} minutes`;
+				} else if (tideInfo.hoursUntil === 0 && tideInfo.minutesUntil === 1) {
+					spokenResponse = `It will be ${tideDescription} at ${tideInfo.name} in ` +
+						`${tideInfo.minutesUntil} minute`;
+				} else {
+					// now handle cases where it is >= 1 hour
+					if (tideInfo.hoursUntil > 1) {
+						spokenResponse = `It will be ${tideDescription} at ${tideInfo.name} in ` +
+							`${tideInfo.hoursUntil} hours`;
+					} else if (tideInfo.hoursUntil === 1) {
+						spokenResponse = `It will be ${tideDescription} at ${tideInfo.name} in ` +
+							`${tideInfo.hoursUntil} hour`;
+					}
+					if (tideInfo.minutesUntil > 1) {
+						spokenResponse += ` and ${tideInfo.minutesUntil} minutes`;
+					} else if (tideInfo.hoursUntil === 1) {
+						spokenResponse += ` and ${tideInfo.minutesUntil} minute`;
+					} else if (tideInfo.hoursUntil === 0) {
+						spokenResponse += ` exactly`;
+					}
 				}
-			}
 
-			console.log(spokenResponse);
-		});
+				resolve(spokenResponse);
+			});
+	});
 }
 
-speakTideInfo('St Helier', HIGH_TIDE);
+
+speakTideInfo('Portland', HIGH_TIDE)
+	.then((speech) => {
+		console.log(speech);
+	});
