@@ -139,6 +139,8 @@ function getTideInfo(portInfo, tideState) {
  * @returns a string containing the text to speak
  */
 function speakTideInfo(port, tidestate) {
+	let spokenResponse = "";
+
 	getPortLocation(port)
 		.then((portInfo) => {
 			console.log(`${portInfo.name} is at latitude ${portInfo.latitude} and longitude ${portInfo.longitude}.`);
@@ -182,4 +184,4 @@ function speakTideInfo(port, tidestate) {
 		});
 }
 
-speakTideInfo('Portland', HIGH_TIDE);
+speakTideInfo('St Helier', HIGH_TIDE);
