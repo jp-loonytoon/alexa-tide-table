@@ -1,5 +1,7 @@
 /* 
-	Test script to use Google and Rapid APIs to access location and tide info.
+    tides.js
+
+	Uses the Google and Hood APIs to access location and tide info.
 
 	STEP 1 - Use Places API from Google Maps platform to get Lat/Long
 		see https://developers.google.com/places/web-service/overview for more detail
@@ -22,6 +24,11 @@ const DEFAULT_DURATION = 24 * 60;	// return data for next 24 hours
 
 const HIGH_TIDE = "HIGH TIDE";
 const LOW_TIDE = "LOW TIDE";
+
+module.exports.speakTideInfo = speakTideInfo;
+module.exports.HIGH_TIDE = HIGH_TIDE;
+module.exports.LOW_TIDE = LOW_TIDE;
+module.exports.USER_AGENT = USER_AGENT;
 
 
 /**
@@ -73,7 +80,7 @@ function getPortLocation(portName) {
 			}
 		});
 	});
- }
+}
 
 
 /**
@@ -138,11 +145,9 @@ function getTideInfo(portInfo, tideState) {
 				t.minutesUntil = Math.floor((timeToNextTide - (t.hoursUntil * 3600)) / 60);
 				resolve(t);
 			} else {
+				console.log(`$$$$ ERROR = {response.data.error}`);
 				reject(response.data.error);
 			}
-		})
-		.catch(function(error) {
-			console.error(error);
 		});
 	});
 }
@@ -197,12 +202,10 @@ function speakTideInfo(port, tidestate) {
 				}
 
 				resolve(spokenResponse);
+			})
+			.catch((error) => {
+				spokenResponse = `Sorry, there was a problem getting tide info for ${port}`;
+				reject(spokenResponse);
 			});
 	});
 }
-
-
-speakTideInfo('ramsgate', HIGH_TIDE)
-	.then((speech) => {
-		console.log(speech);
-	});

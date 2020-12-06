@@ -1,10 +1,12 @@
 # Tide Table
 
-Tide Table is a simple Alexa skill that allows you to ask for the next high or low tide. Currently it only works for the coast around the United Kingdom. It relies on the Tides API from Marea which is access via RapidAPI:
+Tide Table is a simple Alexa skill that allows you to ask for the next high or low tide. Currently it only supports locations around for the coast of the British Isles. It relies on the Tides API from [API Hood](https://api.hood.land/api/tides). It's accessed via RapidAPI:
 
 https://rapidapi.com/apihood/api/tides
 
-It allows you to find out the following:
+The Places API from the Google Maps platform is used to get the location coordinates (lat/long) for the location, which is then used by the Tides API.
+
+The Tide Table skill allows you to find out the following:
 
 * The next high tide for a port around the UK
 * The next low tide for a port around the UK
@@ -18,8 +20,8 @@ A. Say where you'd like to know the next high or low tide.
 
 They can then ask about the next high or low tide, for instance:
 
-U. When is the next high tide at Portsmouth?
-A. The tide at Portsmouth is coming in now, and high tide will be in 50 minutes, at 9.45pm.
+U. When is the next high tide at Portland Bill?
+A. It will be high tide at Portland Bill in 6 hours and 30 minutes.
 
 ## Skill Configuration
 
@@ -37,21 +39,8 @@ The following custom intents are used:
 * NextLowTideIntent
 * CurrentTideIntent
 
-
 ## Lambda Function
 
-You can use the following commands to create a deployment package for your Lambda function on your local developmemt workstation and use it to update the remote Lambda:
-
-```bash
-cd lambda
-zip -rq tidetable.zip *
-mv tidetable.zip ..
-cd ..
-aws lambda update-function-code --function-name TideTable \
-    --zip-file fileb://tidetable.zip --output yaml
-```
-
-Alternately you can use the `UpdateLambda.sh` script to do this.
+Currently it is an Alexa hosted skill, but if you want to create and use your own Lambda function you can do so, and then use the UpdateLambda.sh and TestLambda.sh shell scripts to create a deployment package for your Lambda on ther local developmemt environment, publish it to the remote Lambda, and then test it.
 
 See the AWS Lambda Development Guide for more details: https://docs.aws.amazon.com/lambda/latest/dg/nodejs-package.html
-
