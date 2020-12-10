@@ -10,12 +10,12 @@ configuration:
 ---
 - test: Launch and the skill
 - LaunchRequest:
-  - prompt: Where would you like to find the high tide for?
+  - prompt: Where would you like to find the high or low tide for?
   - exit
 
 # Test 2.1: simple request for high tide for a known UK location (single word)
 ---
-- test: Ask for help and then for high tide info for Ullapool
+- test: Ask for high tide at Ullapool
 - LaunchRequest # Empty expected part means we are not testing the response
 - NextHighTideIntent Location=Ullapool:
   - prompt:
@@ -29,8 +29,8 @@ configuration:
 - test: Ask for help and then for high tide info for Portsmouth
 - LaunchRequest
 - AMAZON.HelpIntent:
-  - prompt: Where would you like to get the high tide for?
-  - reprompt: Where would you like to get the high tide for?
+  - prompt: Where would you like to get the high or low tide for?
+  - reprompt: For which location would you like to the high tide, or low tide?
 - NextHighTideIntent Location=portsmouth:
   - prompt:
     - It will be high tide at Portsmouth in * hours and * minutes.
@@ -43,8 +43,8 @@ configuration:
 - test: Ask for help and then for high tide info for Portland Bill
 - LaunchRequest
 - AMAZON.HelpIntent:
-  - prompt: Where would you like to get the high tide for?
-  - reprompt: Where would you like to get the high tide for?
+  - prompt: Where would you like to get the high or low tide for?
+  - reprompt: For which location would you like to the high tide, or low tide?
 - NextHighTideIntent Location="Portland Bill":
   - prompt:
     - It will be high tide at Portland Bill in * hours and * minutes.
@@ -75,4 +75,4 @@ configuration:
 ---
 - test: Stop intent
 - LaunchRequest
-- AMAZON.StopIntent: Goodbye!
+- AMAZON.StopIntent: Cheerio!

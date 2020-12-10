@@ -16,7 +16,7 @@ const LaunchRequestHandler = {
   handle(handlerInput) {
     console.log(`THIS.EVENT = LaunchRequestHandler running on ${region}`);
     console.log(`VERSION INFO = ${versionInfo}`)
-    const speakOutput = 'Where would you like to find the high tide for?';
+    const speakOutput = 'Where would you like to find the high or low tide for?';
     return handlerInput.responseBuilder
         .speak(speakOutput)
         .reprompt(speakOutput)
@@ -77,11 +77,12 @@ const HelpHandler = {
             && Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.HelpIntent';
     },
     handle(handlerInput) {
-        const speakOutput = 'Where would you like to get the high tide for?';
+        const speakOutput = 'Where would you like to get the high or low tide for?';
+        const respeakOutput = 'For which location would you like to the high tide, or low tide?';
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
-            .reprompt(speakOutput)
+            .reprompt(respeakOutput)
             .getResponse();
     }
 };
@@ -95,7 +96,7 @@ const ExitHandler = {
                 || Alexa.getIntentName(handlerInput.requestEnvelope) === 'AMAZON.StopIntent');
     },
     handle(handlerInput) {
-        const speakOutput = 'Goodbye!';
+        const speakOutput = 'Cheerio!';
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .getResponse();
