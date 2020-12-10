@@ -1,6 +1,4 @@
-# This is the test file for your unit tests, feel free to copy and modify the template test
-# as many times as you want. In this same folder, you'll also find a testing.json
-# file. It contains global configurations for future test files you might create in the future.
+# Bespoken test script for Tide Table skill
 #
 # Find more info on https://read.bespoken.io/unit-testing/getting-started/
 ---
@@ -60,7 +58,7 @@ configuration:
 - LaunchRequest
 - NextHighTideIntent Location="Tunbridge Wells":
   - prompt:
-    - Sorry, there was a problem getting information for Tunbridge Wells.
+    - Sorry, there's no tidal information available for Tunbridge Wells.
   - exit
 
 # Test 3.1: simple request for high tide for a known UK location (single word)

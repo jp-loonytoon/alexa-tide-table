@@ -10,7 +10,7 @@
 
 const tides = require("./tides.js");
 
-tides.speakTideInfo('Leith', tides.HIGH_TIDE)
+tides.speakTideInfo('canvey island', tides.HIGH_TIDE)
 	.then((speech) => {
 		console.log(speech);
 	});
