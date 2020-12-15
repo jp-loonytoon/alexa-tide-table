@@ -34,37 +34,45 @@ const GetNextTideHandler = {
 		&& ((Alexa.getIntentName(r) === 'NextHighTideIntent') ||
 			(Alexa.getIntentName(r) === 'NextLowTideIntent'));
   },
-  handle(handlerInput) {
+  async handle(handlerInput) {
     const r = handlerInput.requestEnvelope;
     const intentName = Alexa.getIntentName(r);
     const portName = Alexa.getSlotValue(r, 'Location');
     console.log(`THIS.EVENT = GetNextTideHandler; with INTENT = ${intentName} and port name = ${portName}`);
-   
-	let tideState = "";
-	if (intentName === 'NextHighTideIntent') {
-		tideState = tides.HIGH_TIDE;
-	} else if (intentName === 'NextLowTideIntent') {
-		tideState = tides.LOW_TIDE;
-	}
+    
+    //const data = await handlerInput.attributesManager.getPersistentAttributes();
+    //data.portName = portName;
 
-  return new Promise((resolve, reject) => {
-		tides.speakTideInfo(portName, tideState)
-			.then((speechOutput) => {
-				console.log(speechOutput);
-				resolve(
-					handlerInput.responseBuilder
-					.speak(speechOutput)
-					.getResponse()
-        );
-      })
-      .catch((error) => {
-				console.log(`ERROR: ${error}`);
-				resolve(
-					handlerInput.responseBuilder
-					.speak(error)
-					.getResponse()
-        );
-      });
+    let tideState = "";
+    if (intentName === 'NextHighTideIntent') {
+      tideState = tides.HIGH_TIDE;
+    } else if (intentName === 'NextLowTideIntent') {
+      tideState = tides.LOW_TIDE;
+    }
+/*
+    if (portName && tideState) {
+      handlerInput.attributesManager.setPersistentAttributes(data);
+      await handlerInput.attributesManager.savePersistentAttributes(data);
+    }
+*/
+    return new Promise((resolve, reject) => {
+      tides.speakTideInfo(portName, tideState)
+        .then((speechOutput) => {
+          console.log(speechOutput);
+          resolve(
+            handlerInput.responseBuilder
+            .speak(speechOutput)
+            .getResponse()
+          );
+        })
+        .catch((error) => {
+          console.log(`ERROR: ${error}`);
+          resolve(
+            handlerInput.responseBuilder
+            .speak(error)
+            .getResponse()
+          );
+        });
     });    
   }
 };

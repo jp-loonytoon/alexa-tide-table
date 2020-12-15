@@ -36,7 +36,9 @@
             "when is the high tide at {Location}",
             "when is high tide at {Location}",
             "when is it high tide at {Location}",
-            "when is the next high tide at {Location}"
+            "when is the next high tide at {Location}",
+            "when is high tide at {Location} going to be",
+            "when is high water at {Location}"
           ]
         },
         {
@@ -52,7 +54,9 @@
             "when is the low tide at {Location}",
             "when is low tide at {Location}",
             "when is it low tide at {Location}",
-            "when is the next low tide at {Location}"
+            "when is the next low tide at {Location}",
+            "when is low tide at {Location} going to be",
+            "when is low water at {Location}"
           ]
         }
       ],
