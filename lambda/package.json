@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Find out the high and low tides around the UK.",
   "main": "index.js",
+  "homepage": "https://github.com/jp-loonytoon/alexa-tide-table#readme",
+  "repository": "github:jp-loonytoon/alexa-tide-table",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,5 +15,9 @@
     "ask-sdk-model": "^1.34.1",
     "axios": ">=0.21.1",
     "i18next": "^15.0.5"
+  },
+  "bugs": {
+    "url": "https://github.com/jp-loonytoon/alexa-tide-table/issues",
+    "email": "support@voiceactivesolutions.co.uk"
   }
 }
