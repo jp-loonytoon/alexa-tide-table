@@ -1,6 +1,4 @@
-# This is the test file for your unit tests, feel free to copy and modify the template test
-# as many times as you want. In this same folder, you'll also find a testing.json
-# file. It contains global configurations for future test files you might create in the future.
+# Bespoken test script for Tide Table skill
 #
 # Find more info on https://read.bespoken.io/unit-testing/getting-started/
 ---
@@ -8,26 +6,95 @@ configuration:
   description: Tide Table unit test suite
   locale: en-GB
 
+# Test 1: we can launch the skill
 ---
 - test: Launch and the skill
-- LaunchRequest: # LaunchRequest sends a LaunchRequest
-  - prompt: Where would you like to find the high tide for?
+- LaunchRequest:
+  - prompt: Where would you like to find the high or low tide for?
   - exit
 
+# Test 2.1: simple request for high tide for a known UK location (single word)
 ---
-- test: Ask for help and then for high tide info for Portsmouth
+- test: Ask for high tide at Ullapool
 - LaunchRequest # Empty expected part means we are not testing the response
-- AMAZON.HelpIntent:
-  - prompt: Where would you like to get the high tide for?
-  - reprompt: Where would you like to get the high tide for?
-- NextHighTideIntent Location=ullapool:
+- NextHighTideIntent Location=Ullapool:
   - prompt:
     - It will be high tide at Ullapool in * hours and * minutes.
     - It will be high tide at Ullapool in * minutes.
     - It's high tide at Ullapool right now.
   - exit
 
+# Test 2.2: request for help, then high tide for a known UK location (single word)
+---
+- test: Ask for help and then for high tide info for Portsmouth
+- LaunchRequest
+- AMAZON.HelpIntent:
+  - prompt: Where would you like to get the high or low tide for?
+  - reprompt: For which location would you like to the high tide, or low tide?
+- NextHighTideIntent Location=portsmouth:
+  - prompt:
+    - It will be high tide at Portsmouth in * hours and * minutes.
+    - It will be high tide at Portsmouth in * minutes.
+    - It's high tide at Portsmouth right now.
+  - exit
+
+# Test 2.3: request for help, then high tide for a known UK location (two words)
+---
+- test: Ask for help and then for high tide info for Portland Bill
+- LaunchRequest
+- AMAZON.HelpIntent:
+  - prompt: Where would you like to get the high or low tide for?
+  - reprompt: For which location would you like to the high tide, or low tide?
+- NextHighTideIntent Location="Portland Bill":
+  - prompt:
+    - It will be high tide at Portland Bill in * hours and * minutes.
+    - It will be high tide at Portland Bill in * minutes.
+    - It's high tide at Portland Bill right now.
+  - exit
+
+# Test 2.3: request for a known UK location that NOT on the coast
+---
+- test: Launch skill then ask for high tide info for Tunbridge Wells
+- LaunchRequest
+- NextHighTideIntent Location="Tunbridge Wells":
+  - prompt:
+    - Sorry, there's no tidal information available for Tunbridge Wells.
+  - exit
+
+# Test 2.3: simple request for high tide for a known UK location (single word)
+---
+- test: Ask for high tide at Ullapool
+- LaunchRequest # Empty expected part means we are not testing the response
+- "When is high tide at Ullapool going to be?":
+  - prompt:
+    - It will be high tide at Ullapool in * hours and * minutes.
+    - It will be high tide at Ullapool in * minutes.
+    - It's high tide at Ullapool right now.
+  - exit
+
+# Test 3.1: simple request for low tide for a known UK location (single word)
+---
+- test: Ask for low tide info for Scrabster
+- LaunchRequest # Empty expected part means we are not testing the response
+- NextLowTideIntent Location=Scrabster:
+  - prompt:
+    - It will be low tide at Scrabster in * hours and * minutes.
+    - It will be low tide at Scrabster in * minutes.
+    - It's low tide at Scrabster right now.
+  - exit
+
+# Test 2.3: simple request for low tide for a known UK location (double word)
+---
+- test: Ask for low tide at Whitley Bay
+- LaunchRequest # Empty expected part means we are not testing the response
+- "When is low water at Whitley Bay?":
+  - prompt:
+    - It will be low tide at Whitley Bay in * hours and * minutes.
+    - It will be low tide at Whitley Bay in * minutes.
+    - It's low tide at Whitley Bay right now.
+  - exit
+
 ---
 - test: Stop intent
 - LaunchRequest
-- AMAZON.StopIntent: Goodbye!
+- AMAZON.StopIntent: Cheerio!
