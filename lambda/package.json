@@ -14,7 +14,7 @@
     "ask-sdk-core": "^2.10.1",
     "ask-sdk-model": "^1.34.1",
     "axios": ">=1.8.2",
-    "i18next": "^15.0.5"
+    "i18next": "^24.2.3"
   },
   "bugs": {
     "url": "https://github.com/jp-loonytoon/alexa-tide-table/issues",
